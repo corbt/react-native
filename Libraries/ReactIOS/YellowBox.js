@@ -53,6 +53,10 @@ if (__DEV__) {
     }
   };
   console.warn = function() {
+    if (typeof arguments[0] === 'string' &&
+        isWarningIgnored(arguments[0])) {
+      return;
+    }
     warn.apply(console, arguments);
     updateWarningMap.apply(null, arguments);
   };
