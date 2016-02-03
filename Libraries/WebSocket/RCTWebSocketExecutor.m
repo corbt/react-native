@@ -56,7 +56,7 @@ RCT_EXPORT_MODULE()
     NSInteger port = [standardDefaults integerForKey:@"websocket-executor-port"] ?: 8081;
     NSString *host = [[_bridge bundleURL] host];
     if (!host) {
-      host = @"localhost";
+      host = @"jupiter.local";
     }
     NSString *URLString = [NSString stringWithFormat:@"http://%@:%zd/debugger-proxy?role=client", host, port];
     _url = [RCTConvert NSURL:URLString];
