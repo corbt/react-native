@@ -26,6 +26,13 @@ var {
 } = React;
 
 class AnExTilt extends React.Component {
+  state: {
+    panX: Animated.Value,
+    opacity: Animated.Value,
+    burns: Animated.Value,
+  };
+  _tiltPanResponder: PanResponder;
+
   constructor(props: Object) {
     super(props);
     this.state = {
@@ -33,7 +40,8 @@ class AnExTilt extends React.Component {
       opacity: new Animated.Value(1),
       burns: new Animated.Value(1.15),
     };
-    this.state.tiltPanResponder = PanResponder.create({
+
+    this._tiltPanResponder = PanResponder.create({
       onStartShouldSetPanResponder: () => true,
       onPanResponderGrant: () => {
         Animated.timing(this.state.opacity, {
@@ -90,7 +98,7 @@ class AnExTilt extends React.Component {
   render(): ReactElement {
     return (
       <Animated.View
-        {...this.state.tiltPanResponder.panHandlers}
+        {...this._tiltPanResponder.panHandlers}
         style={[styles.tilt, {
           opacity: this.state.opacity,
           transform: [

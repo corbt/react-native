@@ -25,7 +25,14 @@ var {
   View,
 } = React;
 
+type ChainedState = {
+  stickers: Array<Animated.ValueXY>;
+}
+
 class AnExChained extends React.Component {
+  state: ChainedState;
+  _chainResponder: PanResponder;
+
   constructor(props: Object) {
     super(props);
     this.state = {
@@ -52,11 +59,14 @@ class AnExChained extends React.Component {
         }),
       ]).start();
     };
-    this.state.chainResponder = PanResponder.create({
+    this._chainResponder = PanResponder.create({
       onStartShouldSetPanResponder: () => true,
       onPanResponderGrant: () => {
         this.state.stickers[0].stopAnimation((value) => {
-          this.state.stickers[0].setOffset(value);           // start where sticker animated to
+          console.log('stopping', value);
+          if (value != null) {
+            this.state.stickers[0].setOffset(value);         // start where sticker animated to
+          }
           this.state.stickers[0].setValue({x: 0, y: 0});     // avoid flicker before next event
         });
       },
@@ -73,7 +83,7 @@ class AnExChained extends React.Component {
       <View style={styles.chained}>
         {this.state.stickers.map((_, i) => {
           var j = this.state.stickers.length - i - 1; // reverse so leader is on top
-          var handlers = (j === 0) ? this.state.chainResponder.panHandlers : {};
+          var handlers = (j === 0) ? this._chainResponder.panHandlers : {};
           return (
             <Animated.Image
               {...handlers}

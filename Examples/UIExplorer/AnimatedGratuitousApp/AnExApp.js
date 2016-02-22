@@ -32,6 +32,16 @@ var CIRCLE_MARGIN = 18;
 var NUM_CIRCLES = 30;
 
 class Circle extends React.Component {
+  state: {
+    isActive: boolean,
+    pan: Animated.ValueXY,
+    pop: Animated.Value,
+    openVal?: Animated.Value,
+    panResponder?: PanResponder,
+  };
+  props: any;
+  longTimer: ?number;
+
   _onLongPress: () => void;
   _toggleIsActive: () => void;
   constructor(props: Object): void {
@@ -155,7 +165,21 @@ class Circle extends React.Component {
   }
 }
 
+type AppState = {
+  openVal: Animated.Value,
+  keys: Array<string>,
+  restLayouts: Array<Object>,
+  activeKey: ?string,
+  activeInitialLayout: ?Object,
+  layout?: Object,
+};
+
 class AnExApp extends React.Component {
+  state: AppState;
+  static title = 'Animated - Gratuitous App';
+  static description = 'Bunch of Animations - tap a circle to ' +
+    'open a view with more animations, or longPress and drag to reorder circles.';
+
   _onMove: (position: Point) => void;
   constructor(props: any): void {
     super(props);
@@ -266,9 +290,9 @@ function moveToClosest({activeKey, keys, restLayouts}, position) {
   }
 }
 
-AnExApp.title = 'Animated - Gratuitous App';
-AnExApp.description = 'Bunch of Animations - tap a circle to ' +
-  'open a view with more animations, or longPress and drag to reorder circles.';
+// AnExApp.title = 'Animated - Gratuitous App';
+// AnExApp.description = 'Bunch of Animations - tap a circle to ' +
+//   'open a view with more animations, or longPress and drag to reorder circles.';
 
 var styles = StyleSheet.create({
   container: {

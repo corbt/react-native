@@ -30,7 +30,16 @@ var AnExChained = require('./AnExChained');
 var AnExScroll = require('./AnExScroll');
 var AnExTilt = require('./AnExTilt');
 
+type SetState = {
+  closeColor: string,
+  openColor: string,
+};
+
 class AnExSet extends React.Component {
+  state: SetState;
+  _dismissY: Animated.Value;
+  _dismissResponder: PanResponder;
+
   constructor(props: Object) {
     super(props);
     function randColor() {
@@ -57,7 +66,7 @@ class AnExSet extends React.Component {
       <View style={styles.container}>
         <Animated.View
           style={[styles.header, { backgroundColor }]}
-          {...this.state.dismissResponder.panHandlers}>
+          {...this._dismissResponder.panHandlers}>
           <Text style={[styles.text, styles.headerText]}>
             {this.props.id}
           </Text>
@@ -80,19 +89,19 @@ class AnExSet extends React.Component {
   }
 
   componentWillMount() {
-    this.state.dismissY = new Animated.Value(0);
-    this.state.dismissResponder = PanResponder.create({
+    this._dismissY = new Animated.Value(0);
+    this._dismissResponder = PanResponder.create({
       onStartShouldSetPanResponder: () => this.props.isActive,
       onPanResponderGrant: () => {
         Animated.spring(this.props.openVal, {          // Animated value passed in.
-          toValue: this.state.dismissY.interpolate({   // Track dismiss gesture
+          toValue: this._dismissY.interpolate({   // Track dismiss gesture
             inputRange: [0, 300],                      // and interpolate pixel distance
             outputRange: [1, 0],                       // to a fraction.
           })
         }).start();
       },
       onPanResponderMove: Animated.event(
-        [null, {dy: this.state.dismissY}]              // track pan gesture
+        [null, {dy: this._dismissY}]              // track pan gesture
       ),
       onPanResponderRelease: (e, gestureState) => {
         if (gestureState.dy > 100) {

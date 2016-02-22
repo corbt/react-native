@@ -35,14 +35,25 @@ var BOBBLE_SPOTS = [...Array(NUM_BOBBLES)].map((_, i) => {  // static positions
   };
 });
 
+type ExBobbleState = {
+  bobbles: Array<{ [key: string]: any }>,
+  selectedBobble: number,
+};
+
 class AnExBobble extends React.Component {
+  state: ExBobbleState;
+  _bobbleResponder: PanResponder;
+
   constructor(props: Object) {
     super(props);
-    this.state = {};
-    this.state.bobbles = BOBBLE_SPOTS.map((_, i) => {
-      return new Animated.ValueXY();
-    });
-    this.state.selectedBobble = null;
+
+    this.state = {
+      bobbles: BOBBLE_SPOTS.map((_, i) => {
+        return new Animated.ValueXY();
+      }),
+      selectedBobble: 0,
+    };
+
     var bobblePanListener = (e, gestureState) => {     // async events => change selection
       var newSelected = computeNewSelected(gestureState);
       if (this.state.selectedBobble !== newSelected) {
@@ -67,7 +78,8 @@ class AnExBobble extends React.Component {
         }).start();
       });
     };
-    this.state.bobbleResponder = PanResponder.create({
+
+    this._bobbleResponder = PanResponder.create({
       onStartShouldSetPanResponder: () => true,
       onPanResponderGrant: () => {
         BOBBLE_SPOTS.forEach((spot, idx) => {
@@ -91,7 +103,7 @@ class AnExBobble extends React.Component {
       <View style={styles.bobbleContainer}>
         {this.state.bobbles.map((_, i) => {
           var j = this.state.bobbles.length - i - 1; // reverse so lead on top
-          var handlers = j > 0 ? {} : this.state.bobbleResponder.panHandlers;
+          var handlers = j > 0 ? {} : this._bobbleResponder.panHandlers;
           return (
             <Animated.Image
               {...handlers}
@@ -129,10 +141,10 @@ var styles = StyleSheet.create({
 
 function computeNewSelected(
   gestureState: Object,
-): ?number {
+): number {
   var {dx, dy} = gestureState;
   var minDist = Infinity;
-  var newSelected = null;
+  var newSelected = 0;
   var pointRadius = Math.sqrt(dx * dx + dy * dy);
   if (Math.abs(RADIUS - pointRadius) < 80) {
     BOBBLE_SPOTS.forEach((spot, idx) => {

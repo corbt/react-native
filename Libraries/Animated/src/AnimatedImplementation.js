@@ -134,7 +134,7 @@ function _flush(rootNode: AnimatedValue): void {
 }
 
 type TimingAnimationConfig =  AnimationConfig & {
-  toValue: number | AnimatedValue | {x: number, y: number} | AnimatedValueXY;
+  toValue: number | AnimatedValue | {x: number, y: number} | AnimatedValueXY | AnimatedInterpolation;
   easing?: (value: number) => number;
   duration?: number;
   delay?: number;
@@ -299,7 +299,7 @@ class DecayAnimation extends Animation {
 }
 
 type SpringAnimationConfig = AnimationConfig & {
-  toValue: number | AnimatedValue | {x: number, y: number} | AnimatedValueXY;
+  toValue: number | AnimatedValue | {x: number, y: number} | AnimatedValueXY | AnimatedInterpolation;
   overshootClamping?: bool;
   restDisplacementThreshold?: number;
   restSpeedThreshold?: number;
@@ -753,7 +753,7 @@ class AnimatedValueXY extends AnimatedWithChildren {
     };
   }
 
-  stopAnimation(callback?: ?() => number): void {
+  stopAnimation(callback?: (value?: ?{ x: number, y: number }) => void): void {
     this.x.stopAnimation();
     this.y.stopAnimation();
     callback && callback(this.__getValue());
